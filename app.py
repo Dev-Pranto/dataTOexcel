@@ -2,6 +2,8 @@ import re
 import pandas as pd
 from datetime import datetime
 import streamlit as st
+import tempfile
+import os
 
 def bengali_to_english_digits(text):
     """Convert Bengali digits to English digits"""
@@ -214,21 +216,33 @@ def main():
 
         # Save to Excel
         try:
-            df.to_excel(filename, index=False, engine='openpyxl')
+            # Create a temporary file
+            with tempfile.NamedTemporaryFile(delete=False, suffix='.xlsx') as tmp:
+                df.to_excel(tmp.name, index=False, engine='openpyxl')
+                tmp.flush()
+                
+                # Read the file data for download
+                with open(tmp.name, "rb") as file:
+                    excel_data = file.read()
+                
+                # Clean up
+                os.unlink(tmp.name)
+            
             st.success(f"Data successfully processed. Total entries: {len(all_data)}")
             
             # Display the saved data
             st.dataframe(df)
             
             # Download button
-            with open(filename, "rb") as file:
-                btn = st.download_button(
-                    label="Download Excel file",
-                    data=file,
-                    file_name=filename,
-                    mime="application/vnd.ms-excel"
-                )
+            st.download_button(
+                label="Download Excel file",
+                data=excel_data,
+                file_name=filename,
+                mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            )
 
+        except ImportError:
+            st.error("The openpyxl package is required to export to Excel. Please add it to your requirements.txt file.")
         except Exception as e:
             st.error(f"Error saving to Excel: {str(e)}")
 
