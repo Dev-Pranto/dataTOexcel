@@ -114,7 +114,7 @@ def process_customer_block(block_text):
 
         # Extract name (first non-empty line or line with name)
         if not name and (i == 0 or any(keyword in line for keyword in ['নাম', 'name',  'nam'])):
-            name = re.sub(r'^(নাম|আপনার নাম|name|nam)\s*[:：]?\s*', '', line, flags=re.IGNORECASE).strip()
+            name = re.sub(r'^(আপনার নাম|আমার নাম|নাম,|নামঃ|নাম|name|nam)\s*[:：]?\s*', '', line, flags=re.IGNORECASE).strip()
 
         # Extract phone (look for 11 digits in any format)
         if not phone:
