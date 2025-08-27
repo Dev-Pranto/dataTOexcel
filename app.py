@@ -124,11 +124,11 @@ def process_customer_block(block_text):
 
         # Extract address (lines with address keywords)
         address_keywords = ['জেলা', 'থানা', 'এলাকা', 'ঠিকানা', 'এলাকার নাম', 'address', 'area']
-        if any(keyword in line for keyword in address_keywords) and not any(order_keyword in line for order_keyword in ['অর্ডার', 'order']):
+        if any(keyword in line for keyword in address_keywords) and not any(order_keyword in line for order_keyword in ['অর্ডার', 'অডার', 'order']):
             address_lines.append(line)
 
         # Extract order note
-        if 'অর্ডার' in line or 'order' in line:
+        if 'অর্ডার' in line or 'order' in line or 'অডার' in line:
             # The next non-empty line is the order note
             for j in range(i+1, len(lines)):
                 if lines[j].strip():
