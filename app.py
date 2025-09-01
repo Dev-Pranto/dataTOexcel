@@ -70,7 +70,7 @@ def extract_customer_blocks(input_text):
             continue
             
         # Check if this block starts with a customer identifier
-        starts_with_name = any(re.match(r'^(নাম|name|nam|আপনার নাম)', line, re.IGNORECASE) for line in lines[:2])
+        starts_with_name = any(re.match(r'^(নাম|name|nam|আপনার নাম|আমার নাম)', line, re.IGNORECASE) for line in lines[:2])
         
         if starts_with_name and current_block:
             # If we have a current block and this looks like a new customer, save the current one
@@ -114,7 +114,7 @@ def process_customer_block(block_text):
 
         # Extract name (first non-empty line or line with name)
         if not name and (i == 0 or any(keyword in line for keyword in ['নাম', 'name',  'nam'])):
-            name = re.sub(r'^(আপনার নাম|আমার নাম|নাম,|নামঃ|নাম|name|nam)\s*[:：]?\s*', '', line, flags=re.IGNORECASE).strip()
+            name = re.sub(r'^(আমার নাম|আপনার নাম|আমার নাম|নাম,|নামঃ|নাম|name|nam)\s*[:：]?\s*', '', line, flags=re.IGNORECASE).strip()
 
         # Extract phone (look for 11 digits in any format)
         if not phone:
@@ -123,7 +123,7 @@ def process_customer_block(block_text):
                 phone = extracted_phone
 
         # Extract address (lines with address keywords)
-        address_keywords = ['জেলা', 'থানা', 'এলাকা', 'ঠিকানা', 'এলাকার নাম', 'address', 'area']
+        address_keywords = ['jela','Jela', 'জেলা', 'থানা', 'এলাকা', 'ঠিকানা', 'এলাকার নাম', 'address', 'area']
         if any(keyword in line for keyword in address_keywords) and not any(order_keyword in line for order_keyword in ['অর্ডার', 'অডার', 'order']):
             address_lines.append(line)
 
