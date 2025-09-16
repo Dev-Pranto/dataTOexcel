@@ -36,7 +36,7 @@ def extract_amount(note_text):
     text = bengali_to_english_digits(note_text)
 
     # Pattern to match amount (looks for numbers followed by "টাকা" or "Taka")
-    amount_pattern = r'(\d+)\s*টাকা|Taka'
+    amount_pattern = r'(\d+)\s*টাকা|Taka|taka'
     match = re.search(amount_pattern, text)
     if match:
         return match.group(1)
@@ -70,7 +70,7 @@ def extract_customer_blocks(input_text):
             continue
             
         # Check if this block starts with a customer identifier
-        starts_with_name = any(re.match(r'^(নাম|name|nam|আপনার নাম|আমার নাম)', line, re.IGNORECASE) for line in lines[:2])
+        starts_with_name = any(re.match(r'^(নাম|name|nam|আপনার নাম|আমার নাম|md|Md|MD)', line, re.IGNORECASE) for line in lines[:2])
         
         if starts_with_name and current_block:
             # If we have a current block and this looks like a new customer, save the current one
@@ -123,12 +123,12 @@ def process_customer_block(block_text):
                 phone = extracted_phone
 
         # Extract address (lines with address keywords)
-        address_keywords = ['jela','Jela', 'জেলা', 'থানা', 'এলাকা', 'ঠিকানা', 'এলাকার নাম', 'address', 'area']
+        address_keywords = ['jela','Jela', 'জেলা', 'থানা', 'এলাকা', 'ঠিকানা', 'এলাকার নাম', 'address','Address','ADDRESS', 'area']
         if any(keyword in line for keyword in address_keywords) and not any(order_keyword in line for order_keyword in ['অর্ডার', 'অডার', 'order']):
             address_lines.append(line)
 
         # Extract order note
-        if 'অর্ডার' in line or 'order' in line or 'অডার' in line:
+        if 'অর্ডার' in line or 'order' in line or 'অডার' in line or 'Order' in line:
             # The next non-empty line is the order note
             for j in range(i+1, len(lines)):
                 if lines[j].strip():
